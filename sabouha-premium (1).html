@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100e18">
+  <meta name="description" content="مفاجأة صغيرة لصبوحة — تجربة خاصة بمناسبة نهارها.">
+  <title>إلى صبوحة — حكاية صغيرة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #100e18;
+      --night-2: #171321;
+      --panel: rgba(255,255,255,.055);
+      --panel-strong: rgba(255,255,255,.085);
+      --line: rgba(239,220,185,.17);
+      --gold: #e8c994;
+      --gold-soft: #bfa477;
+      --rose: #d8a2a7;
+      --cream: #f6efe4;
+      --muted: #aaa1b2;
+      --green: #94c9a6;
+      --radius: 26px;
+      --sans: 'Cairo', system-ui, sans-serif;
+      --serif: 'Playfair Display', Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      font-family: var(--sans);
+      color: var(--cream);
+      background:
+        radial-gradient(ellipse at 14% 13%, rgba(101,76,120,.22), transparent 36%),
+        radial-gradient(ellipse at 87% 78%, rgba(126,74,89,.13), transparent 34%),
+        var(--night);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .17;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E");
+    }
+    button, textarea, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+    .ambient { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: -1; }
+    .orb { position: absolute; border: 1px solid rgba(232,201,148,.12); border-radius: 50%; }
+    .orb.one { width: 390px; height: 390px; top: 13%; left: -225px; }
+    .orb.two { width: 570px; height: 570px; right: -330px; bottom: -310px; }
+    .spark { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--gold); opacity: .55; box-shadow: 0 0 12px rgba(232,201,148,.7); animation: twinkle 4s ease-in-out infinite; }
+    .spark.s1 { top: 20%; left: 16%; animation-delay: .3s; }
+    .spark.s2 { top: 72%; left: 23%; animation-delay: 1.2s; }
+    .spark.s3 { top: 30%; right: 14%; animation-delay: 2s; }
+    .spark.s4 { top: 83%; right: 29%; animation-delay: .8s; }
+    @keyframes twinkle { 0%,100% { transform: scale(.8); opacity: .25; } 50% { transform: scale(1.7); opacity: .8; } }
+
+    .topbar {
+      position: fixed; z-index: 20; top: 0; right: 0; left: 0;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding: 18px clamp(18px, 5vw, 72px);
+      border-bottom: 1px solid rgba(255,255,255,.065);
+      background: rgba(16,14,24,.76); backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px;
+      border: 1px solid rgba(232,201,148,.55); border-radius: 50%; color: var(--gold);
+      font-family: var(--serif); font-size: 19px; font-style: italic;
+    }
+    .brand-name { font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+    .brand-sub { color: var(--muted); font-family: 'DM Sans', sans-serif; direction: ltr; font-size: 9px; letter-spacing: .21em; margin-top: 1px; }
+    .top-status { display: flex; align-items: center; gap: 15px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .progress-copy { color: var(--gold); font-family: 'DM Sans', sans-serif; direction: ltr; font-size: 11px; letter-spacing: .1em; }
+    .progress-track { width: clamp(56px, 9vw, 112px); height: 2px; overflow: hidden; background: rgba(255,255,255,.14); }
+    .progress-fill { width: 16.666%; height: 100%; background: var(--gold); transition: width .55s ease; }
+    .back-button { color: var(--muted); background: transparent; border: 0; padding: 6px 0; cursor: pointer; font-size: 11px; }
+    .back-button:hover { color: var(--cream); }
+
+    main { min-height: 100vh; }
+    .screen {
+      display: none; min-height: 100svh; padding: 118px clamp(20px, 6vw, 90px) 58px;
+      align-items: center; justify-content: center; position: relative; isolation: isolate;
+    }
+    .screen.active { display: flex; animation: screen-in .72s cubic-bezier(.2,.75,.25,1) both; }
+    @keyframes screen-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .screen-inner { width: min(100%, 1080px); margin: 0 auto; }
+    .eyebrow { display: flex; align-items: center; gap: 11px; color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: .14em; }
+    .eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--gold-soft); }
+    .serif { font-family: var(--serif); font-weight: 500; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: clamp(40px, 7vw, 100px); }
+    .hero-copy { padding-block: 20px; }
+    .edition { display: inline-flex; align-items: center; gap: 9px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: #d5c8b7; font-size: 10px; letter-spacing: .06em; margin-bottom: 27px; }
+    .edition-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(232,201,148,.7); }
+    h1 { margin: 0; font-size: clamp(45px, 6vw, 78px); line-height: 1.2; letter-spacing: -.045em; font-weight: 700; }
+    h1 .name { color: var(--gold); font-family: var(--serif); font-size: 1.18em; font-weight: 500; font-style: italic; display: block; margin-top: 4px; }
+    .hero-description { color: #b9b1c0; font-size: 14px; line-height: 2.15; max-width: 430px; margin: 25px 0 0; }
+    .hero-foot { display: flex; align-items: center; gap: 13px; margin-top: 36px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: .12em; direction: ltr; }
+    .hero-foot::before { content: ""; width: 42px; height: 1px; background: rgba(232,201,148,.6); }
+    .question-panel { position: relative; padding: clamp(25px, 3.5vw, 40px); background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.025)); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 25px 80px rgba(0,0,0,.18); overflow: hidden; }
+    .question-panel::before { content: "S"; position: absolute; font: italic 180px/1 var(--serif); color: rgba(232,201,148,.035); left: 1px; bottom: -50px; pointer-events: none; }
+    .panel-top { display: flex; align-items: center; justify-content: space-between; padding-bottom: 17px; border-bottom: 1px solid rgba(255,255,255,.09); color: var(--muted); font-size: 10px; }
+    .lock-mark { color: var(--gold); font-size: 15px; }
+    h2 { margin: 0; font-size: clamp(24px, 3.1vw, 36px); line-height: 1.45; letter-spacing: -.025em; }
+    .question-title { margin: 27px 0 8px; font-size: 21px; line-height: 1.7; }
+    .question-note { margin: 0 0 18px; color: var(--muted); font-size: 12px; line-height: 1.9; }
+    .choices { display: grid; gap: 9px; }
+    .choice {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 13px 15px;
+      color: #e8e0e8; text-align: right; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 12px; cursor: pointer; transition: border-color .2s, background .2s, transform .2s;
+    }
+    .choice:hover { border-color: rgba(232,201,148,.48); background: rgba(232,201,148,.06); transform: translateX(-3px); }
+    .choice.selected { border-color: var(--gold); background: rgba(232,201,148,.1); }
+    .choice .choice-arrow { color: var(--gold); font-size: 17px; }
+    .micro { font-size: 10px; color: #938b9d; margin-top: 16px; }
+
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 34px; }
+    .section-head h2 { font-size: clamp(30px, 4vw, 48px); margin-top: 12px; }
+    .section-head .section-aside { max-width: 235px; color: var(--muted); font-size: 12px; line-height: 2; margin: 0 0 4px; }
+    .counter-layout { display: grid; grid-template-columns: .82fr 1.18fr; align-items: center; gap: clamp(28px, 7vw, 90px); }
+    .age-emblem { display: grid; place-items: center; min-height: 300px; position: relative; }
+    .age-ring { width: min(70vw, 290px); aspect-ratio: 1; border: 1px solid rgba(232,201,148,.24); border-radius: 50%; display: grid; place-items: center; position: relative; }
+    .age-ring::before, .age-ring::after { content: ""; position: absolute; border: 1px solid rgba(232,201,148,.12); border-radius: 50%; inset: 15px; }
+    .age-ring::after { inset: -13px; border-style: dashed; animation: slow-spin 60s linear infinite; }
+    @keyframes slow-spin { to { transform: rotate(360deg); } }
+    .age-number { display: block; color: var(--gold); font: 500 clamp(76px, 10vw, 126px)/1 var(--serif); letter-spacing: -.07em; }
+    .age-caption { color: #c0b4c3; font-size: 12px; margin-top: 10px; }
+    .age-content { padding: 10px 0; }
+    .age-content h2 { margin-top: 14px; }
+    .age-content > p { color: #b5acbb; font-size: 13px; line-height: 2.2; max-width: 490px; }
+    .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 26px; }
+    .time-cell { padding: 17px 12px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.09); border-radius: 15px; text-align: center; }
+    .time-cell strong { display: block; color: var(--cream); font: 500 30px/1.2 var(--serif); }
+    .time-cell span { display: block; margin-top: 8px; color: var(--muted); font-size: 11px; }
+    .birthday-note { margin-top: 17px; color: var(--gold); font-size: 12px; }
+
+    .meter-layout { display: grid; grid-template-columns: .82fr 1.18fr; align-items: stretch; gap: clamp(28px, 7vw, 90px); }
+    .meter-intro { display: flex; flex-direction: column; justify-content: center; }
+    .meter-intro h2 { margin: 14px 0 15px; font-size: clamp(34px, 4.5vw, 54px); }
+    .meter-intro p { max-width: 400px; color: var(--muted); font-size: 13px; line-height: 2.1; }
+    .meter-deco { margin-top: 28px; color: rgba(232,201,148,.7); font: italic 45px/1 var(--serif); }
+    .meter-panel { display: flex; flex-direction: column; justify-content: center; padding: clamp(25px, 4vw, 46px); min-height: 350px; background: linear-gradient(140deg, rgba(216,162,167,.10), rgba(255,255,255,.035)); border: 1px solid rgba(216,162,167,.22); border-radius: var(--radius); }
+    .meter-panel-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 10px; }
+    .meter-panel-label strong { color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 12px; }
+    input[type="range"] { appearance: none; width: 100%; height: 3px; margin: 33px 0 13px; background: linear-gradient(to left, var(--gold), var(--rose)); border-radius: 5px; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { appearance: none; width: 19px; height: 19px; border-radius: 50%; background: var(--cream); border: 4px solid var(--gold-soft); box-shadow: 0 0 0 6px rgba(232,201,148,.1); }
+    input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--cream); border: 4px solid var(--gold-soft); box-shadow: 0 0 0 6px rgba(232,201,148,.1); }
+    .range-labels { display: flex; justify-content: space-between; color: #898092; font-size: 10px; }
+    .reaction { display: flex; align-items: center; gap: 18px; min-height: 100px; margin-top: 27px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.1); }
+    .reaction-emoji { display: grid; place-items: center; width: 58px; height: 58px; flex: 0 0 58px; border-radius: 18px; background: rgba(232,201,148,.1); color: var(--gold); font-size: 26px; }
+    .reaction strong { display: block; font-size: 15px; margin-bottom: 4px; }
+    .reaction p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.8; }
+
+    .tickets-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; max-width: 850px; margin: 0 auto; }
+    .ticket {
+      position: relative; min-height: 250px; padding: 0; border: 1px solid rgba(232,201,148,.28); border-radius: 21px; cursor: pointer; color: var(--cream);
+      text-align: right; background: transparent; perspective: 1000px; overflow: hidden; transition: opacity .35s, transform .35s, border-color .35s;
+    }
+    .ticket:hover:not(:disabled) { transform: translateY(-5px); border-color: var(--gold); }
+    .ticket-inner { display: block; position: absolute; inset: 0; transition: transform .75s cubic-bezier(.2,.72,.2,1); transform-style: preserve-3d; }
+    .ticket.flipped .ticket-inner { transform: rotateY(180deg); }
+    .ticket-face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 25px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .ticket-front { background: radial-gradient(circle at 100% 0, rgba(232,201,148,.15), transparent 42%), linear-gradient(145deg, #211b2b, #17131f); }
+    .ticket-front::after { content: ""; position: absolute; inset: 11px; border: 1px dashed rgba(232,201,148,.21); border-radius: 13px; pointer-events: none; }
+    .ticket-back { background: linear-gradient(145deg, #393044, #211b2b); transform: rotateY(180deg); justify-content: center; }
+    .ticket-index { font-family: 'DM Sans', sans-serif; direction: ltr; letter-spacing: .2em; font-size: 10px; color: var(--gold); }
+    .ticket-symbol { font-size: 31px; color: var(--gold); margin: 10px 0; }
+    .ticket-label { font-size: 21px; font-weight: 700; }
+    .ticket-hint { color: var(--muted); font-size: 11px; }
+    .ticket-back p { margin: 13px 0 0; color: #e9dfe9; font-size: 14px; line-height: 2; }
+    .ticket-back .reward-tag { display: inline-block; padding: 5px 10px; border-radius: 999px; border: 1px solid rgba(232,201,148,.35); color: var(--gold); font-size: 10px; margin-bottom: 12px; }
+    .ticket.faded { opacity: .48; filter: saturate(.6); }
+    .ticket:disabled { cursor: default; }
+    .ticket-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; color: var(--muted); font-size: 11px; }
+    .ticket-footer span:last-child { color: var(--gold); }
+
+    .feedback-layout { display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(30px, 7vw, 90px); align-items: start; }
+    .feedback-copy h2 { font-size: clamp(34px, 4.5vw, 54px); margin: 14px 0 17px; }
+    .feedback-copy p { color: var(--muted); line-height: 2.2; font-size: 13px; max-width: 340px; }
+    .quote-mark { font: italic 94px/.8 var(--serif); color: rgba(232,201,148,.5); margin-top: 32px; }
+    .feedback-form { border-top: 1px solid var(--line); }
+    .form-field { padding: 21px 0; border-bottom: 1px solid rgba(255,255,255,.09); }
+    .form-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+    .form-field .field-sub { display: block; color: #887f91; font-size: 10px; margin-bottom: 11px; }
+    textarea { width: 100%; min-height: 88px; resize: vertical; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 13px 15px; color: var(--cream); font-size: 12px; line-height: 1.9; }
+    textarea::placeholder { color: #746d7c; }
+    .form-note { color: #82798a; font-size: 10px; margin-top: 17px; }
+
+    .final-wrap { max-width: 920px; margin: auto; }
+    .final-heading { text-align: center; margin-bottom: 33px; }
+    .final-heading .eyebrow { justify-content: center; }
+    .final-heading h2 { font-size: clamp(35px, 5vw, 58px); margin-top: 14px; }
+    .letter { position: relative; max-width: 760px; margin: 0 auto; padding: clamp(28px, 5vw, 55px); border: 1px solid var(--line); background: linear-gradient(145deg, rgba(255,255,255,.065), rgba(255,255,255,.025)); border-radius: 24px; box-shadow: 0 22px 75px rgba(0,0,0,.14); }
+    .letter::before { content: "“"; position: absolute; left: 25px; top: 0; color: rgba(232,201,148,.22); font: 130px/.9 var(--serif); }
+    .letter-kicker { font-family: 'DM Sans', sans-serif; color: var(--gold); font-size: 10px; letter-spacing: .22em; direction: ltr; }
+    .letter-copy { direction: ltr; text-align: left; font-family: 'DM Sans', sans-serif; color: #d5cdd8; font-size: clamp(13px, 1.6vw, 15px); line-height: 2.05; margin-top: 23px; }
+    .letter-copy p { margin: 0 0 17px; }
+    .letter-copy p:last-child { margin-bottom: 0; }
+    .letter-sign { display: flex; justify-content: space-between; align-items: end; gap: 20px; padding-top: 25px; margin-top: 27px; border-top: 1px solid rgba(255,255,255,.1); }
+    .sign-off { color: var(--muted); font-size: 10px; }
+    .sign-off strong { display: block; color: var(--gold); font: italic 25px var(--serif); margin-top: 7px; }
+    .coffee-stamp { display: grid; place-items: center; width: 55px; height: 55px; border: 1px solid rgba(232,201,148,.32); border-radius: 50%; color: var(--gold); font-size: 22px; }
+
+    .actions { display: flex; justify-content: flex-start; align-items: center; gap: 13px; margin-top: 27px; flex-wrap: wrap; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 49px; padding: 13px 20px;
+      border: 1px solid var(--gold); border-radius: 12px; background: var(--gold); color: #201824; font-size: 12px; font-weight: 800;
+      text-decoration: none; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s;
+    }
+    .button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(232,201,148,.12); background: #f0d9ae; }
+    .button .arrow { font-size: 18px; line-height: 1; }
+    .button-ghost { color: var(--cream); background: transparent; border-color: rgba(255,255,255,.17); }
+    .button-ghost:hover { background: rgba(255,255,255,.06); box-shadow: none; }
+    .actions.center { justify-content: center; }
+    .tiny-legal { text-align: center; color: #746c7c; font-size: 10px; margin-top: 25px; }
+    .toast { position: fixed; z-index: 50; bottom: 24px; left: 50%; transform: translate(-50%, 15px); padding: 11px 17px; background: #282231; border: 1px solid var(--line); border-radius: 999px; color: var(--cream); font-size: 11px; opacity: 0; pointer-events: none; transition: .3s; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 800px) {
+      .hero-grid, .counter-layout, .meter-layout, .feedback-layout { grid-template-columns: 1fr; gap: 28px; }
+      .hero-copy { padding-bottom: 0; }
+      .hero-description { margin-top: 17px; }
+      .hero-foot { margin-top: 21px; }
+      .question-panel { max-width: 600px; width: 100%; margin: 0 auto; }
+      .age-emblem { min-height: auto; order: 2; }
+      .age-ring { width: 190px; }
+      .age-number { font-size: 78px; }
+      .counter-layout { gap: 22px; }
+      .section-head { display: block; }
+      .section-head .section-aside { margin-top: 12px; max-width: 460px; }
+      .meter-deco { display: none; }
+      .meter-panel { min-height: 305px; }
+      .feedback-copy p { max-width: 580px; }
+      .quote-mark { display: none; }
+    }
+    @media (max-width: 540px) {
+      .topbar { padding: 13px 17px; gap: 10px; }
+      .brand-mark { width: 32px; height: 32px; flex-basis: 32px; }
+      .brand-name { font-size: 10px; }
+      .brand-sub { font-size: 8px; }
+      .top-status { gap: 8px; font-size: 9px; }
+      .progress-track { width: 42px; }
+      .back-button { font-size: 10px; }
+      .screen { padding: 100px 18px 38px; align-items: center; }
+      .screen-inner { width: 100%; }
+      h1 { font-size: clamp(42px, 12vw, 58px); }
+      .hero-grid { gap: 28px; }
+      .edition { margin-bottom: 18px; }
+      .hero-description { font-size: 12px; }
+      .question-panel { padding: 23px 18px; border-radius: 21px; }
+      .question-title { font-size: 18px; }
+      .choice { font-size: 12px; padding: 12px 13px; }
+      .section-head { margin-bottom: 24px; }
+      .time-grid { gap: 7px; }
+      .time-cell { padding: 15px 5px; }
+      .time-cell strong { font-size: 25px; }
+      .time-cell span { font-size: 10px; }
+      .tickets-grid { grid-template-columns: 1fr; gap: 12px; }
+      .ticket { min-height: 205px; }
+      .ticket-face { padding: 23px; }
+      .ticket-label { font-size: 19px; }
+      .letter { padding: 28px 21px; }
+      .letter::before { left: 14px; font-size: 95px; }
+      .letter-sign { align-items: center; }
+      .actions { gap: 9px; }
+      .button { width: 100%; }
+      .actions .button-ghost { width: auto; flex: 1; }
+      .actions .button:not(.button-ghost) { flex: 1.4; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <span class="orb one"></span><span class="orb two"></span>
+    <i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i><i class="spark s4"></i>
+  </div>
+
+  <header class="topbar">
+    <div class="brand" aria-label="A little something for Sabouha">
+      <div class="brand-mark">S.</div>
+      <div><div class="brand-name">إلى صبوحة</div><div class="brand-sub">A LITTLE SOMETHING</div></div>
+    </div>
+    <div class="top-status">
+      <button id="backButton" class="back-button" type="button" onclick="goTo(currentScreen - 1)" hidden>← رجوع</button>
+      <span id="stepCounter" class="progress-copy">01 <span style="color:#716979">/ 06</span></span>
+      <div class="progress-track" aria-label="تقدّم التجربة"><div id="progressFill" class="progress-fill"></div></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 01 / A personal entrance -->
+    <section class="screen active" id="screen1" aria-labelledby="heroTitle">
+      <div class="screen-inner hero-grid">
+        <div class="hero-copy">
+          <div class="edition"><span class="edition-dot"></span> SPECIAL EDITION <span style="opacity:.5">·</span> 10.10</div>
+          <div class="eyebrow">حاجة صغيرة، معمولة ليك إنتِ</div>
+          <h1 id="heroTitle">نهارك موش<br>كيف العادة،<span class="name">صبوحة.</span></h1>
+          <p class="hero-description">حضّرتلك حاجة مختلفة على المساجات العادية. خذي راحتك، جاوبي على شوية حاجات، وفي الآخر تلقى رسالة مستنيّتك.</p>
+          <div class="hero-foot">MADE WITH A LITTLE THOUGHT</div>
+        </div>
+        <div class="question-panel">
+          <div class="panel-top"><span>دخول خاصّ</span><span class="lock-mark">✳</span><span>01 / 06</span></div>
+          <h2 class="question-title">قبل ما نبدأو…<br>نتفكّرو حاجة؟</h2>
+          <p class="question-note">سؤال أمان موش رسمي برشة 😌 وقتاش أول مرّة بعثتلك مساج؟</p>
+          <div class="choices" id="answerChoices">
+            <button type="button" class="choice" onclick="chooseAnswer(this)"><span>ساعتين جيستيون</span><span class="choice-arrow">↙</span></button>
+            <button type="button" class="choice" onclick="chooseAnswer(this)"><span>منعرفش والله 😭</span><span class="choice-arrow">↙</span></button>
+            <button type="button" class="choice" onclick="chooseAnswer(this)"><span>خلّيني نتفكّر شوية</span><span class="choice-arrow">↙</span></button>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 / Time -->
+    <section class="screen" id="screen2" aria-labelledby="ageTitle">
+      <div class="screen-inner counter-layout">
+        <div class="age-content">
+          <div class="eyebrow">CHAPTER 01 · حكاية وقت</div>
+          <h2 id="ageTitle">عام جديد،<br><span class="serif" style="color:var(--gold);font-style:italic">وحكايات أكثر.</span></h2>
+          <p>رغملي الي عملت 18... اما ساعات مخك نحسوا متع طفل عمرو 5 سنين</p>
+          <div class="time-grid" aria-label="العمر الحالي">
+            <div class="time-cell"><strong id="years">17</strong><span>سنة</span></div>
+            <div class="time-cell"><strong id="months">11</strong><span>شهر</span></div>
+            <div class="time-cell"><strong id="days">29</strong><span>يوم</span></div>
+          </div>
+          <div id="birthdayNote" class="birthday-note">كل عام وإنتِ بخير، قبلها ولا في نهارها ✦</div>
+          <div class="actions">
+            <button class="button" type="button" onclick="goTo(3)">نكمّلوا الحكاية <span class="arrow">←</span></button>
+          </div>
+        </div>
+        <div class="age-emblem" aria-hidden="true">
+          <div class="age-ring"><div style="text-align:center"><span id="bigAge" class="age-number">18</span><span class="age-caption">A NEW CHAPTER</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 / Slider -->
+    <section class="screen" id="screen3" aria-labelledby="meterTitle">
+      <div class="screen-inner meter-layout">
+        <div class="meter-intro">
+          <div class="eyebrow">CHAPTER 02 · بكل صراحة</div>
+          <h2 id="meterTitle">مقياس<br><span class="serif" style="color:var(--rose);font-style:italic">تحمّل صبوحة.</span></h2>
+          <p>بالنسبة للأسبوع اللي فات، قداش مازلتِ متحمّلة حركاتي؟ ما تقلقيش، النتيجة بيناتنا… تقريبًا.</p>
+          <div class="meter-deco">be honest with me.</div>
+        </div>
+        <div class="meter-panel">
+          <div class="meter-panel-label"><span>نسبة التحمّل</span><strong id="meterValue">50%</strong></div>
+          <input id="toleranceMeter" type="range" min="0" max="100" value="50" aria-label="نسبة التحمّل" oninput="updateReaction()">
+          <div class="range-labels"><span>ما عادش 😒</span><span>لاباس 😌</span><span>ملاك 😇</span></div>
+          <div class="reaction" aria-live="polite">
+            <div id="reactionEmoji" class="reaction-emoji">😌</div>
+            <div><strong id="reactionTitle">مازلت فما أمل…</strong><p id="reactionText">نعتبرها فرصة أخرى، ونحاول نكون عاقل المرّة هاذي.</p></div>
+          </div>
+          <div class="actions"><button class="button" type="button" onclick="goTo(4)">نعدّيوها هالمرّة <span class="arrow">←</span></button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 / Surprise tickets -->
+    <section class="screen" id="screen4" aria-labelledby="ticketTitle">
+      <div class="screen-inner">
+        <div class="section-head">
+          <div><div class="eyebrow">CHAPTER 03 · حظّك اليوم</div><h2 id="ticketTitle">اختاري ورقتك.</h2></div>
+          <p class="section-aside">عندك اختيار واحد برك. اضغطي على الورقة اللي حسّيتها تنادي فيك، والباقي يتكفّل بيه الحظّ.</p>
+        </div>
+        <div class="tickets-grid" id="ticketGrid">
+          <button class="ticket" type="button" onclick="revealTicket(this, 0)" aria-label="اختيار الورقة الأولى">
+            <span class="ticket-inner">
+              <span class="ticket-face ticket-front"><span class="ticket-index">LUCKY NOTE · 01</span><span class="ticket-symbol">✧</span><span class="ticket-label">ورقة الحظّ الأولى</span><span class="ticket-hint">اضغطي باش تكتشفيها ↙</span></span>
+              <span class="ticket-face ticket-back"><span class="reward-tag">الوعد رقم 01</span><span class="ticket-label">50 دينار؟ 💌</span><p>لمدّة شهر، كان تبعثلي مساج في أي وقت وما نجاوبكش وقتها، منّي ليك 50 دينار.</p></span>
+            </span>
+          </button>
+          <button class="ticket" type="button" onclick="revealTicket(this, 1)" aria-label="اختيار الورقة الثانية">
+            <span class="ticket-inner">
+              <span class="ticket-face ticket-front"><span class="ticket-index">LUCKY NOTE · 02</span><span class="ticket-symbol">✧</span><span class="ticket-label">ورقة الحظّ الثانية</span><span class="ticket-hint">اضغطي باش تكتشفيها ↙</span></span>
+              <span class="ticket-face ticket-back"><span class="reward-tag">الوعد رقم 02</span><span class="ticket-label">حتى هاذي 50؟ ☕</span><p>لمدّة شهر، كان تقعد تلوج عليّ وما تلقانيش، منّي ليك 50 دينار.</p></span>
+            </span>
+          </button>
+        </div>
+        <div class="ticket-footer"><span id="ticketStatus">ورقة واحدة. قرار مصيري برشة.</span><span>GOOD LUCK ✦</span></div>
+        <div id="ticketNext" class="actions center" hidden><button class="button" type="button" onclick="goTo(5)">عندي ما نقول زادة <span class="arrow">←</span></button></div>
+      </div>
+    </section>
+
+    <!-- 05 / A little feedback -->
+    <section class="screen" id="screen5" aria-labelledby="feedbackTitle">
+      <div class="screen-inner feedback-layout">
+        <div class="feedback-copy">
+          <div class="eyebrow">CHAPTER 04 · دورك تحكي</div>
+          <h2 id="feedbackTitle">نسمعك،<br><span class="serif" style="color:var(--gold);font-style:italic">من غير فلتر.</span></h2>
+          <p>بلا مجاملة وبلا إجابات دبلوماسية. اكتبلي اللي يعجبك واللي تحبّه يتبدّل. المرّة هاذي باش نقرا مليح… وعد.</p>
+          <div class="quote-mark">“</div>
+        </div>
+        <div>
+          <form class="feedback-form" id="feedbackForm" onsubmit="event.preventDefault(); goTo(6);">
+            <div class="form-field">
+              <label for="liked">شنوّة الحاجات اللي عجبتك فيّا؟</label>
+              <span class="field-sub">الحاجات الصغيرة زادة تتحسب.</span>
+              <textarea id="liked" rows="3" placeholder="نستحقّ نسمع كلمة باهية زادة…"></textarea>
+            </div>
+            <div class="form-field">
+              <label for="change">وشنوّة تحبّهم يتبدّلوا فيّا؟</label>
+              <span class="field-sub">نقد بنّاء، موش تقرير إداري 😅</span>
+              <textarea id="change" rows="3" placeholder="خلّيني نفهمك أكثر…"></textarea>
+            </div>
+            <p class="form-note">* رأيك يهمّني… أمّا ما نضمنش نولي إنسان مثالي في ليلة ونهار.</p>
+            <div class="actions"><button class="button" type="submit">وصلنا للرسالة الأخيرة <span class="arrow">←</span></button></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 / The letter -->
+    <section class="screen" id="screen6" aria-labelledby="finalTitle">
+      <div class="screen-inner final-wrap">
+        <div class="final-heading"><div class="eyebrow">CHAPTER 05 · آخر صفحة</div><h2 id="finalTitle">A note for you<span style="color:var(--gold)">.</span></h2></div>
+        <article class="letter">
+          <div class="letter-kicker">TO SABOUHA · WITH THOUGHT</div>
+          <div class="letter-copy">
+            <p>Despite the quiet that has settled between us recently, I couldn’t let your birthday pass like just any ordinary day. I hope this new year brings you success, calm, and plenty of reasons to smile.</p>
+            <p>Disagreements happen. Maybe this past week gave us the space we needed to cool off and see things more clearly. What matters to me is a connection built on honesty, mutual support, and the willingness to understand each other.</p>
+            <p>Whenever you feel ready, you can choose the day for coffee. No pressure, no big speech — just a chance to talk and maybe begin a better chapter.</p>
+          </div>
+          <div class="letter-sign"><div class="sign-off">ONE LAST THING<strong>Happy Birthday, Sabouha.</strong></div><div class="coffee-stamp" aria-label="قهوة">☕</div></div>
+        </article>
+        <div class="actions center"><button class="button" type="button" onclick="sendWhatsApp()">نلتقي ونفتح صفحة جديدة <span class="arrow">↗</span></button><button class="button button-ghost" type="button" onclick="goTo(1)">نعاود من الأوّل</button></div>
+        <div class="tiny-legal">MADE FOR ONE PERSON ONLY · 10.10 ✦</div>
+      </div>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    let currentScreen = 1;
+    let selectedTicket = false;
+    const totalScreens = 6;
+
+    function goTo(number) {
+      const next = Math.max(1, Math.min(totalScreens, Number(number)));
+      currentScreen = next;
+      document.querySelectorAll('.screen').forEach((screen) => {
+        const active = screen.id === `screen${next}`;
+        screen.classList.toggle('active', active);
+        screen.setAttribute('aria-hidden', String(!active));
+      });
+      document.getElementById('stepCounter').innerHTML = `${String(next).padStart(2, '0')} <span style="color:#716979">/ 06</span>`;
+      document.getElementById('progressFill').style.width = `${(next / totalScreens) * 100}%`;
+      document.getElementById('backButton').hidden = next === 1 || next === 6;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function chooseAnswer(button) {
+      document.querySelectorAll('.choice').forEach((choice) => {
+        choice.classList.remove('selected');
+        choice.disabled = true;
+      });
+      button.classList.add('selected');
+      const label = button.querySelector('span').textContent.trim();
+      showToast(`إجابة مقبولة: ${label} ✦`);
+      window.setTimeout(() => goTo(2), 420);
+    }
+
+    function updateAge() {
+      const now = new Date();
+      const born = new Date(2008, 9, 10, 0, 0, 0);
+      let years = now.getFullYear() - born.getFullYear();
+      let months = now.getMonth() - born.getMonth();
+      let days = now.getDate() - born.getDate();
+      if (days < 0) {
+        months -= 1;
+        days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+      }
+      if (months < 0) { years -= 1; months += 12; }
+      years = Math.max(0, years);
+      document.getElementById('years').textContent = years;
+      document.getElementById('months').textContent = months;
+      document.getElementById('days').textContent = days;
+      document.getElementById('bigAge').textContent = years;
+
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      let nextBirthday = new Date(now.getFullYear(), 9, 10);
+      if (today > nextBirthday) nextBirthday = new Date(now.getFullYear() + 1, 9, 10);
+      const daysUntil = Math.round((nextBirthday - today) / 86400000);
+      const note = document.getElementById('birthdayNote');
+      if (daysUntil === 0) note.textContent = 'اليوم نهارك… كل عام وإنتِ بخير ✦';
+      else if (daysUntil === 1) note.textContent = 'غدوة نهارك… حضّري روحك للتهاني 🎂';
+      else note.textContent = `باقي ${daysUntil} يوم على نهارك الجاي ✦`;
+    }
+
+    function updateReaction() {
+      const value = Number(document.getElementById('toleranceMeter').value);
+      document.getElementById('meterValue').textContent = `${value}%`;
+      const emoji = document.getElementById('reactionEmoji');
+      const title = document.getElementById('reactionTitle');
+      const text = document.getElementById('reactionText');
+      const reaction = emoji.parentElement;
+      const reactionCopy = title.parentElement;
+      if (value >= 75) {
+        emoji.textContent = '😇';
+        title.textContent = 'ياخي ملاك إنتِ؟';
+        text.textContent = 'هذاكا علاش قعدت نحبكً!';
+        reactionCopy.style.display = '';
+        reaction.style.justifyContent = '';
+      } else if (value >= 40) {
+        emoji.textContent = '😌';
+        title.textContent = 'مازلت فما أمل…';
+        text.textContent = 'نعتبرها فرصة أخرى، ونحاول نكون عاقل المرّة هاذي.';
+        reactionCopy.style.display = '';
+        reaction.style.justifyContent = '';
+      } else {
+        emoji.textContent = '•ᴗ•';
+        title.textContent = '';
+        text.textContent = '';
+        reactionCopy.style.display = 'none';
+        reaction.style.justifyContent = 'center';
+      }
+    }
+
+    function revealTicket(button, index) {
+      if (selectedTicket) return;
+      selectedTicket = true;
+      const tickets = [...document.querySelectorAll('.ticket')];
+      button.classList.add('flipped');
+      button.setAttribute('aria-pressed', 'true');
+      document.getElementById('ticketStatus').textContent = `اختيارك كان الورقة رقم 0${index + 1}…`;
+      window.setTimeout(() => {
+        tickets.forEach((ticket) => {
+          if (ticket !== button) {
+            ticket.classList.add('flipped', 'faded');
+            ticket.disabled = true;
+            ticket.setAttribute('aria-label', 'الورقة الأخرى — لم يقع اختيارها');
+          }
+        });
+        button.disabled = true;
+        document.getElementById('ticketStatus').textContent = 'الحظّ اختار معاك… توّة نكمّلوا ✦';
+        document.getElementById('ticketNext').hidden = false;
+      }, 720);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    function sendWhatsApp() {
+      const phoneNumber = '21621191069';
+      const liked = document.getElementById('liked').value.trim();
+      const change = document.getElementById('change').value.trim();
+      let message = 'قبلت الدعوة، لنلتقي ونتحدث. Happy Birthday chapter accepted ☕';
+
+      // Include every answer written in screen 5 in the WhatsApp draft.
+      const feedback = [];
+      if (liked) feedback.push(`شنوّة الحاجات اللي عجبتك فيّا؟\n${liked}`);
+      if (change) feedback.push(`شنوّة تحبّهم يتبدّلوا فيّا؟\n${change}`);
+      if (feedback.length) {
+        message += `\n\n— إجاباتك بصراحة —\n${feedback.join('\n\n')}`;
+      }
+
+      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    updateAge();
+    updateReaction();
+    goTo(1);
+  </script>
+</body>
+</html>
